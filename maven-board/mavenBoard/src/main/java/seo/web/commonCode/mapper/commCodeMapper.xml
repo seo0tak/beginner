@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="seo.web.commonCode.mapper">
+	
+	<select id="selectCommonCodeList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT A.CODE
+         , B.DECODE 
+         , B.DECODE_NAME AS decodeName
+         , B.USE_YN AS USE_YN
+		  FROM MASTERTABLE A , DETAILTABLE B
+		WHERE A.CODE = B.CODE
+          AND A.CODE = #{CODE}
+          AND B.USE_YN = #{USEYN}
+	</select>
+	
+	<select id="selectCommonCodeListMain" resultType="java.util.HashMap">
+		SELECT * 
+		
+		  FROM MASTERTABLE
+	</select>
+	
+	<select id="selectDetailList" resultType="java.util.HashMap">
+		SELECT * 
+		  FROM DETAILTABLE
+		WHERE CODE = #{CODE}
+	</select>
+	
+	<select id="decodeCheck" resultType="int">
+		SELECT COUNT(*) 
+		  FROM DETAILTABLE
+		WHERE DECODE = #{decode}
+	</select>
+	
+	<insert id="insertDetailCode" parameterType="java.util.HashMap">
+        <foreach collection="list" item="item" open="INSERT ALL " separator=" " close="SELECT * FROM DUAL" > 
+         INTO DETAILTABLE
+        ( CODE, DECODE, DECODE_NAME, USE_YN )
+        VALUES
+        ( #{item.CODE}, #{item.DECODE}, #{item.DECODE_NAME}, #{item.USE_YN} )
+        </foreach>
+	</insert>
+	
+	<delete id="deleteDetailCode" parameterType="java.util.HashMap">
+		<foreach collection="list" item="item" separator=";" open="DECLARE BEGIN" close="; END;">
+		DELETE FROM DETAILTABLE
+		WHERE
+			DECODE = #{item.DECODE}
+		</foreach>
+	</delete>
+	
+	<update id="updateDetailCode" parameterType="java.util.HashMap">
+	    <foreach collection="list" item="item" index="index" separator=";" open="DECLARE BEGIN" close="; END;">
+        UPDATE DETAILTABLE SET
+			DECODE_NAME = #{item.DECODE_NAME},
+			USE_YN = #{item.USE_YN}
+		WHERE
+			DECODE = #{item.DECODE}
+	    </foreach>
+	</update>
+	
+</mapper>
