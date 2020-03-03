@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: SEO
+    password: YEONGTAK
+---
+mybatis:
+  config-location: classpath:sqlMapConfig.xml

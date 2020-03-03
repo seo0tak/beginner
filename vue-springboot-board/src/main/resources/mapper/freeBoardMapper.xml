@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ino.web.freeboard.repository.FreeBoardRepository">
+	
+	<select id="freeBoardGetList" resultType="hashmap">
+		SELECT 
+		 * 
+		FROM 
+		 (
+		   SELECT 
+		    ROWNUM RN, A.*
+		   FROM 
+			(
+				SELECT
+				 ROWNUM, NUM, TITLE, NAME, TO_CHAR(REGDATE,'YYYY/MM/DD') REGDATE, CONTENT
+				FROM 
+				FREEBOARD
+				WHERE 1 = 1
+				ORDER BY LPAD( NUM, 5 ) DESC
+			) A
+		 )
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="totalCount" resultType="int">
+		SELECT COUNT(*) AS CNT 
+		  FROM FREEBOARD
+		 WHERE 1 = 1
+	</select>
+
+	<insert id="insertBoard" statementType="CALLABLE" parameterType="hashmap">
+	   	call BOARD_PRO(
+		  		#{bunho},
+		  		#{title},
+		  		#{name},
+		  		#{content},
+		  		#{result, mode=OUT, jdbcType=NUMERIC, javaType=int}
+	  	)
+	</insert>
+	
+	<select id="getDataByNum" resultType="hashmap" parameterType="int">
+		SELECT NUM, TITLE, NAME, TO_CHAR(REGDATE,'YYYY/MM/DD') REGDATE, CONTENT FROM FREEBOARD
+		WHERE NUM=#{num}
+	</select>
+	
+	<update id="updateByNum" statementType="CALLABLE" parameterType="hashmap">
+	    call BOARD_PRO(
+		  		#{bunho},
+		  		#{TITLE},
+		  		#{NAME},
+		  		#{CONTENT},
+		  		#{result, mode=OUT, jdbcType=NUMERIC, javaType=int}
+		)
+	</update>
+	
+	<delete id="deleteByNum" parameterType="int">
+		DELETE FROM FREEBOARD
+		WHERE NUM
+		= #{num}
+	</delete>
+	
+</mapper>
