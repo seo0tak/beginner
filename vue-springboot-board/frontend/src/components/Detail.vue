@@ -44,7 +44,7 @@
             <br>              
             <div align="right" id="write">
                 <button type="button" v-on:click="updateBoard()" class="btn btn btn-primary">수정</button>
-            <button type="button" v-on:click="deleteBoard()" class="btn btn btn-primary">삭제</button>
+                <button type="button" v-on:click="deleteBoard()" class="btn btn btn-primary">삭제</button>
             </div>
         </form>    
     </div>

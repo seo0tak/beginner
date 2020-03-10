@@ -5,16 +5,64 @@
     </div>
     <br>
     <div id="board" v-for="list in data" :key="list.NUM">
-        <div style="width: 10px;float: left">{{ list.NUM }}</div>
-        <div style="width: 290px;float: left">
-            <!-- <a href="javascript:void(0)" @click="detailTodo(list.NUM)">{{list.TITLE}}</a> -->
-            <a href="javascript:void(0)" @click="detailView(list.NUM)">{{list.TITLE}}</a>
-        </div>
-        <div style="width: 100px;float: left">{{ list.NAME }}</div>
-        <div style="width: 100px;float: left">{{ $moment(list.REGDATE).format('YYYY-MM-DD') }}</div>
-        <hr style="width: 500px">
-        <div v-show='flag' style="display: none;">
-          <detail-component></detail-component>
+        <modal v-if='flag === list.NUM' name="hello-world">
+          {{list.CONTENT}}
+        </modal>
+        <!-- <div v-if='flag === list.NUM'> -->
+        
+        <!-- <detail-component></detail-component> -->
+         <!--  <form role="form" style="width: 500px;" v-on:submit.prevent="">
+            <label for="NAME">이름</label>        
+            <input 
+                type="text" 
+                class="form-control" 
+                v-model="list.NAME"
+                readonly
+            />
+            <br><br>
+
+            <label for="TITLE">제목</label>                
+            <input 
+                type="text" 
+                class="form-control" 
+                v-model="list.TITLE"
+                required
+            />
+            <br><br>
+
+            <label for="REGDATE">작성날짜</label>                
+            <input 
+                type="text" 
+                class="form-control" 
+                v-model="list.REGDATE"
+                readonly
+            />
+            <br><br>
+
+            <label for="CONTENT">내용</label>                
+            <textarea 
+                class="form-control" 
+                v-model="list.CONTENT" 
+                rows="13" 
+                required
+            >
+            </textarea>
+            <br>              
+            <div align="right" id="write">
+                <button type="button" v-on:click="updateBoard()" class="btn btn btn-primary">수정</button>
+                <button type="button" v-on:click="deleteBoard()" class="btn btn btn-primary">삭제</button>
+            </div>
+          </form>    --> 
+        <!-- </div> -->
+        <div>
+          <div style="width: 50px;float: left">{{ list.NUM }}</div>
+          <div style="width: 250px;float: left">
+              <!-- <a href="javascript:void(0)" @click="detailTodo(list.NUM)">{{list.TITLE}}</a> -->
+              <a href="javascript:void(0)" @click="show(list.NUM)">{{list.TITLE}}</a>
+          </div>
+          <div style="width: 100px;float: left">{{ list.NAME }}</div>
+          <div style="width: 100px;float: left">{{ $moment(list.REGDATE).format('YYYY-MM-DD') }}</div>
+          <hr style="width: 500px">
         </div>
     </div>
     <div id="paging">
@@ -45,7 +93,7 @@ export default {
       data: [],
       paging: [],
       curPage: 0,
-      flag: false
+      flag: 0
     }
   },
   methods:{
@@ -57,7 +105,6 @@ export default {
       .then(res => {
         this.paging = res.data.paging
         this.data = res.data.list
-        console.log(this.paging.blockBegin)
       })
     },
     pageList (curPage) {
@@ -70,7 +117,16 @@ export default {
       this.$router.push({ name: 'Detail' , params: { num: num }})
     },
     detailView(num) {
-      this.flag = !this.flag;
+      bus.$emit('msg', num);
+      this.flag = num;
+    },
+    show (num) {
+      this.flag = num;
+      this.$modal.show('hello-world');
+    },
+    hide (num) {
+      this.flag = num;
+      this.$modal.hide('hello-world');
     }
   },
   mounted(){

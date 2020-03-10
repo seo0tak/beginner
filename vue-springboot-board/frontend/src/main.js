@@ -3,11 +3,13 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import VModal from 'vue-js-modal'
 /* import axios from 'axios' */
 
 
 import VueMomentLib from 'vue-moment-lib'
 Vue.use(VueMomentLib)
+Vue.use(VModal)
 
 Vue.config.productionTip = false
 /* Vue.prototype.$http = axios */
